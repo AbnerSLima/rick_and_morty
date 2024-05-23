@@ -1,21 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-   const [count, setCount] = useState(0)
+   const [inputId, setInputId] = useState("");
+   const [name, setName] = useState("");
+   const [status, setStatus] = useState("");
+   const [species, setSpecies] = useState ("");
+   const [gender, setGender] = useState ("");
+   const [origin, setOrigin] = useState ("");
+   const [location, setLocation] = useState ("");
+   const [created, setCreated] = useState ("");
+   const [image, setImage] = useState ("");
+   const [episode, setEpisode] = useState ("");
 
-   const [name, setLogradouro] = useState("");
-   const [status, setCep] = useState("");
-   const [species, setBairro] = useState ("");
-   const [gender, setLocalidade] = useState ("");
-   const [location, setUf] = useState ("");
-   const [origin, setUf] = useState ("");
-   const [image, setUf] = useState ("");
+   const searchChar = async () => {
+    if (inputId === "") return;
+    
+      const url = `https://rickandmortyapi.com/api/character/${inputId}`
+      const response = await fetch(url);
+      const returne = await response.json();
+
+      setName(returne.name)
+      setStatus(returne.status)
+      setSpecies(returne.species)
+      setGender(returne.gender)
+      setOrigin(returne.origin.name)
+      setLocation(returne.location.name)
+      setCreated(returne.created)
+      setEpisode(returne.episode)
+      setImage(returne.image)
+    }
+
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      searchChar(inputId);
+      setInputId('');
+    };
+
+    useEffect(() => {
+      searchChar(1);
+    }, []);
 
   return (
     <>
-    <body className="container-fluid bg-info">
-      <header className="row p-1">
+    <div className="body container-fluid bg-info">
+      <div className="row p-1">
         <div className="row align-items-center">
           <div className="col-4">
           </div>
@@ -27,8 +56,35 @@ function App() {
           <div className="col-4">
           </div>
         </div>
-      </header>
-      <main className="row p-3">
+      </div>
+      <div className="row text-center d-flex justify-content-center align-items-center">
+        <form onSubmit={handleSubmit} 
+        className="row g-0 justify-content-center">
+          <div className="col-auto">
+            <label
+              htmlFor="inputId"
+              className="visually-hidden">
+                input_char
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="inputId"
+              placeholder="Id do Personagem"
+              value={inputId}
+							onChange={(e) => setInputId(e.target.value)}
+            />
+          </div>
+          <div className="col-auto">
+            <button
+              type="submit"
+              className="btn mb-3">
+                <img src="./search.svg" alt="search"/>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div className="row">
         <div className="container text-center">
           <div className="row align-items-center align-self-center">       
             <div className="col-1">
@@ -41,82 +97,84 @@ function App() {
             <div className="col">
               <div className="container">
                 <div className="row row-cols-1 row-cols-md-2 g-4 align-items-center"> 
-                  
-                  
                   <div className="col d-flex justify-content-center">
-                        <div className="bd-b card bg-card"
-                          style={{width: "18rem"}}>
-                          <img id='image'
-                            src="https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-                            className="card-img-top"
-                            alt="personagem"/>
-                          <div className="card-body">
-                            <h5
-                              id="name"
-                              className="name2 card-title">
-                              Card title
-                            </h5>
-                          </div>
-                        </div>
+                    <div className="bd-b card bg-card"
+                      style={{width: "18rem"}}>
+                      <img id='image'
+                        src={image || "https://rickandmortyapi.com/api/character/avatar/1.jpeg"}
+                        className="card-img-top"
+                        alt="personagem"
+                      />
+                      <div className="card-body">
+                        <span
+                          id="name"
+                          className="name2 card-title"
+                          >
+                          {name || "- - -"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <div className="col d-flex justify-content-center">
                     <div className="bd-b card"
-                      style={{width: "18rem"}}>
+                      style={{width: "24rem"}}>
                       <div className="card-body">
                         <ul className="list-group list-group-flush text-start" >
                           <li
                             className="list-group-item ">
-                              Status: <span
-                                        className='tx-n'
-                                        id="status">
-                                          Maria
-                                      </span>
-                          </li>
-                          <li
-                            className="list-group-item">
-                              Espécie: <span
-                                  className='tx-n'
-                                  id="species">
-                                    Maria
-                                </span>
-                          </li>
-                          <li
-                            className="list-group-item">
-                              Genero: <span
+                              Status:
+                              <span
                                 className='tx-n'
-                                id="gender">
-                                  Maria
+                                id="status"> {status || "- - -"}
                               </span>
                           </li>
                           <li
                             className="list-group-item">
-                              Origem: <span
-                                  className='tx-n'
-                                  id="origin">
-                                    Maria
-                                </span>
-                          </li>
-                          <li
-                            className="list-group-item">
-                              Localidade: <span
-                                  className='tx-n'
-                                  id="location">
-                                    Maria
-                                </span>
-                          </li>
-                          <li
-                            className="list-group-item">
-                              Criação: <span
+                              Espécie:
+                              <span
                                 className='tx-n'
-                                id="created">
-                                  Maria
-                                </span>
+                                id="species"> {species || "- - -"}
+                              </span>
                           </li>
                           <li
                             className="list-group-item">
-                              Episódios: <span
+                              Genero:
+                              <span
                                 className='tx-n'
-                                id="episode" style={{
+                                id="gender"> {gender || "- - -"}
+                              </span>
+                          </li>
+                          <li
+                            className="list-group-item">
+                              Origem:
+                              <span
+                                  className='tx-n'
+                                  id="origin"> {origin || "- - -"}
+                              </span>
+                          </li>
+                          <li
+                            className="list-group-item">
+                              Localidade:
+                              <span
+                                className='tx-n'
+                                id="location"> {location || "- - -"}
+                              </span>
+                          </li>
+                          <li
+                            className="list-group-item">
+                              Criação:
+                              <span
+                                className='tx-n'
+                                id="created"> {created || "- - -"}
+                              </span>
+                          </li>
+                          <li
+                            className="list-group-item">
+                              Episódios:
+                              <span
+                                className='tx-n'
+                                id="episode"
+                                style={{
                                   display: 'inline-block',
                                   width: '220px',
                                   whiteSpace: 'nowrap',
@@ -124,58 +182,8 @@ function App() {
                                   textOverflow: 'ellipsis',
                                   lineHeight: '1',
                                 verticalAlign: 'middle'
-                                }}>
-                                  1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36,
-    37,
-    38,
-    39,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    50,
-    51
+                                }}
+                              > {episode || "- - -"}
                               </span>
                           </li>
                         </ul>
@@ -194,31 +202,8 @@ function App() {
             </div>
           </div>
         </div>
-      </main>
-      <footer className="row  text-center d-flex justify-content-center align-items-center">
-        <form className="row g-0 justify-content-center">
-          <div className="col-auto">
-            <label
-              htmlFor="inputIdCharacter"
-              className="visually-hidden">
-                input_char
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              id="inputIdCharacter"
-              placeholder="Id do Personagem"/>
-          </div>
-          <div className="col-auto">
-            <button
-              type="submit"
-              className="btn mb-3">
-                <img src="./search.svg" alt="search"/>
-            </button>
-          </div>
-        </form>
-      </footer>
-    </body>
+      </div>
+    </div>
     </>
   )
 }
