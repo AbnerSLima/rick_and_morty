@@ -3,6 +3,7 @@ import './App.css'
 
 function App() {
    const [inputId, setInputId] = useState("");
+   const [charId, setcharId] = useState(1);
    const [name, setName] = useState("");
    const [status, setStatus] = useState("");
    const [species, setSpecies] = useState ("");
@@ -13,10 +14,25 @@ function App() {
    const [image, setImage] = useState ("");
    const [episode, setEpisode] = useState ("");
 
-   const searchChar = async () => {
-    if (inputId === "") return;
+   const defaultImage = "https://rickandmortyapi.com/api/character/avatar/66.jpeg";
+   const defaultName = "? ? ?";
+   const defaultValue = "- - -";
+
+   const searchChar = async (id) => {
+    if (id === "" || id > 826) {
+      setImage(defaultImage);
+      setName(defaultName);
+      setStatus(defaultValue);
+      setSpecies(defaultValue);
+      setGender(defaultValue);
+      setOrigin(defaultValue);
+      setLocation(defaultValue);
+      setCreated(defaultValue);
+      setEpisode(defaultValue);
+      return;
+    }
     
-      const url = `https://rickandmortyapi.com/api/character/${inputId}`
+      const url = `https://rickandmortyapi.com/api/character/${id}`
       const response = await fetch(url);
       const returne = await response.json();
 
@@ -27,19 +43,32 @@ function App() {
       setOrigin(returne.origin.name)
       setLocation(returne.location.name)
       setCreated(returne.created)
-      setEpisode(returne.episode)
+
+      const episodeNumbers = returne.episode.map(url => url.split('/').pop());
+      const episodes = episodeNumbers.join(', ');
+      setEpisode(episodes)
+
       setImage(returne.image)
     }
 
     const handleSubmit = (event) => {
       event.preventDefault();
       searchChar(inputId);
+      setcharId(Number(inputId));
       setInputId('');
     };
 
     useEffect(() => {
-      searchChar(1);
-    }, []);
+      searchChar(charId);
+    }, [charId]);
+    
+    const charNext = () => {
+      setcharId((nextId) => nextId + 1);
+    };
+  
+    const charPrev = () => {
+      setcharId((prevId) => (prevId > 1 ? prevId - 1 : 1));
+    };
 
   return (
     <>
@@ -90,7 +119,8 @@ function App() {
             <div className="col-1">
               <button
                 type="button"
-                className="buttons btn">
+                className="buttons btn"
+                onClick={charPrev}>
                 &lt;
               </button>
             </div>
@@ -110,7 +140,7 @@ function App() {
                           id="name"
                           className="name2 card-title"
                           >
-                          {name || "- - -"}
+                          {name || "? ? ?"}
                         </span>
                       </div>
                     </div>
@@ -170,8 +200,7 @@ function App() {
                           </li>
                           <li
                             className="list-group-item">
-                              Episódios:
-                              <span
+                              Episódios: <span
                                 className='tx-n'
                                 id="episode"
                                 style={{
@@ -196,7 +225,8 @@ function App() {
             <div className="col-1">
               <button
                 type="button"
-                className="buttons btn">
+                className="buttons btn"
+                onClick={charNext}>
                   &gt;
               </button>
             </div>
